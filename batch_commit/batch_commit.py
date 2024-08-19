@@ -33,7 +33,7 @@ def fetch_data(base_url, query_type):
 
 def get_base_fee(data, lotus_instance):
     base_fee = next(item['value'][1] for item in data['data']['result'] if item['metric']['instance'] == lotus_instance)
-    return int(base_fee)
+    return float(base_fee)
 
 def get_commits(data, miner_id):
     commits = next(item['value'][1] for item in data['data']['result'] if item['metric']['miner'] == miner_id and item['metric']['status'] == 'SCA')
@@ -49,7 +49,7 @@ def main():
     lotus_miner_path = config['lotus']['MinerPath']
     os.environ['LOTUS_MINER_PATH'] = lotus_miner_path
 
-    base_fee_threshold = int(config['lotus']['BasefeeThreshold'])
+    base_fee_threshold = float(config['lotus']['BasefeeThreshold'])
     commit_threshold = int(config['lotus']['CommitThreshold'])
     base_url = config['prometheus']['BaseURL']
     miner_id = config['lotus']['MinerID']
