@@ -9,7 +9,7 @@ from datetime import datetime
 
 # Load configuration
 CONFIG_FILE_PATH = '/usr/local/bin/batch_commit.conf'
-log_path = '/home/vit/commit.log'
+log_path = '~/commit.log'
 
 def read_config(config_file_path):
     config = configparser.ConfigParser()
