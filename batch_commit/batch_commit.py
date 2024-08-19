@@ -32,7 +32,7 @@ def fetch_data(base_url, query_type):
     return response.json()
 
 def get_base_fee(data, miner_id):
-    base_fee = next(item['value'][1] for item in data['data']['result'] if item['metric']['miner_id'] == miner_id)
+    base_fee = next(item['value'][1] for item in data['data']['result'] if item['metric']['miner'] == miner_id)
     return float(base_fee)
 
 def get_commits(data, miner_id):
