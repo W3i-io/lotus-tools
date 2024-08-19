@@ -41,7 +41,7 @@ def get_commits(data, miner_id):
     return int(commits)
 
 def commit_sectors(log_path):
-    command = f"lotus-miner sectors batching commit --publish-now"
+    command = f"/usr/local/bin/lotus-miner sectors batching commit --publish-now"
     
     # Run the command and capture the output
     result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
