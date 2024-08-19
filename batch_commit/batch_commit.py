@@ -56,24 +56,28 @@ def main():
     lotus_instance = config['prometheus']['LotusInstance']
     log_path = config['log']['LogPath']
 
-    log_message(log_path,"Starting...")
-    log_message(log_path,f"Base fee threshold: {base_fee_threshold}")
+    log_message(log_path,"----------------------------- Starting -----------------------------------")
+    log_message(log_path,f"Configured basefee threshold: {base_fee_threshold}")
 
     base_fee_data = fetch_data(base_url, "basefee")
     base_fee = get_base_fee(base_fee_data, lotus_instance)
+    log_message(log_path,f"Current basefee: {base_fee}")
 
     if base_fee < base_fee_threshold:
         commits_data = fetch_data(base_url, "commits")
         commits = get_commits(commits_data, miner_id)
+        log_message(log_path,f"Number of sectors waiting to be committed: {commits}")
+        log_message(log_path,f"Configured sectors commits threshold: {commit_threshold}")
 
         if commits > commit_threshold:
-            log_message(log_path,f"Committing (base fee: {base_fee})")
+            log_message(log_path,f"Committing sectors...")
             commit_sectors()
-            log_message(log_path,"Committed - sleeping for 1m")
         else:
-            log_message(log_path,f"Not enough commits ({commits}) - sleeping for 5 minutes")
+            log_message(log_path,f"Not enough sectors to be committed")
     else:
-        log_message(log_path,f"Base fee too high. BaseFee: {base_fee} - sleeping for 5 minutes")
+        log_message(log_path,f"Basefee too high to commit")
+
+    log_message(log_path,"----------------------------- Completed -----------------------------------")
 
 if __name__ == "__main__":
     main()
