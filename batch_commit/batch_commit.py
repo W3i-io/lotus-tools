@@ -40,7 +40,7 @@ def get_commits(data, miner_id):
     return int(commits)
 
 def commit_sectors():
-    os.system(f"{os.environ['LOTUS_MINER_PATH']} sectors batching commit --publish-now")
+    os.system("lotus-miner sectors batching commit --publish-now")
 
 def main():
     config = read_config(CONFIG_FILE_PATH)
