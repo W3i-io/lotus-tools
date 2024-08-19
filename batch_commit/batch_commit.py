@@ -5,6 +5,7 @@ import time
 import requests
 import configparser
 import json
+import subprocess
 from datetime import datetime
 
 # Load configuration
@@ -39,8 +40,14 @@ def get_commits(data, miner_id):
     commits = next(item['value'][1] for item in data['data']['result'] if item['metric']['miner'] == miner_id and item['metric']['status'] == 'SCA')
     return int(commits)
 
-def commit_sectors():
-    os.system("lotus-miner sectors batching commit --publish-now")
+def commit_sectors(log_path):
+    command = f"lotus-miner sectors batching commit --publish-now"
+    
+    # Run the command and capture the output
+    result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    log_message(log_path, result.stdout)
+    log_message(log_path, result.stderr)
+    #os.system("lotus-miner sectors batching commit --publish-now")
 
 def main():
     config = read_config(CONFIG_FILE_PATH)
@@ -71,7 +78,7 @@ def main():
 
         if commits > commit_threshold:
             log_message(log_path,f"Committing sectors...")
-            commit_sectors()
+            commit_sectors(log_path)
         else:
             log_message(log_path,f"Not enough sectors to be committed")
     else:
