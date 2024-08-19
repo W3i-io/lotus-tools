@@ -31,9 +31,9 @@ def fetch_data(base_url, query_type):
     response.raise_for_status()  # To ensure any HTTP errors are raised
     return response.json()
 
-def get_base_fee(data, miner_id):
-    base_fee = next(item['value'][1] for item in data['data']['result'] if item['metric']['miner'] == miner_id)
-    return float(base_fee)
+def get_base_fee(data, lotus_instance):
+    base_fee = next(item['value'][1] for item in data['data']['result'] if item['metric']['instance'] == lotus_instance)
+    return int(base_fee)
 
 def get_commits(data, miner_id):
     commits = next(item['value'][1] for item in data['data']['result'] if item['metric']['miner'] == miner_id and item['metric']['status'] == 'SCA')
@@ -49,16 +49,17 @@ def main():
     lotus_miner_path = config['lotus']['MinerPath']
     os.environ['LOTUS_MINER_PATH'] = lotus_miner_path
 
-    base_fee_threshold = float(config['lotus']['BasefeeThreshold'])
+    base_fee_threshold = int(config['lotus']['BasefeeThreshold'])
     commit_threshold = int(config['lotus']['CommitThreshold'])
     base_url = config['prometheus']['BaseURL']
     miner_id = config['lotus']['MinerID']
+    lotus_instance = config['prometheus']['LotusInstance']
 
     log_message("Starting...")
     log_message(f"Base fee threshold: {base_fee_threshold}")
 
     base_fee_data = fetch_data(base_url, "basefee")
-    base_fee = get_base_fee(base_fee_data, miner_id)
+    base_fee = get_base_fee(base_fee_data, lotus_instance)
 
     if base_fee < base_fee_threshold:
         commits_data = fetch_data(base_url, "commits")
